@@ -1,10 +1,5 @@
 {
-  "usd_oficial": {
-    "compra": 8888,
-    "venta": 8888,
-    "updated_at": "2026-09-22T12:46:14.789Z",
-    "note": "Actualizado manualmente vía Telegram"
-  },
+  "usd_oficial": null,
   "usd_blue": null,
   "eur_oficial": null
 }
