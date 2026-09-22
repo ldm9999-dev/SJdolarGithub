@@ -15,10 +15,16 @@
 
   body {
     margin: 0;
-    background: var(--bg);
+    background:
+      linear-gradient(rgba(8, 10, 7, 0.86), rgba(8, 10, 7, 0.92)),
+      url("fondo-dolares.jpg") center / cover no-repeat fixed;
     color: var(--ink);
     font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
     padding: clamp(20px, 5vw, 48px) 20px 40px;
+  }
+
+  @media (max-width: 700px) {
+    body { background-attachment: scroll; }
   }
 
   .wrap { max-width: 640px; margin: 0 auto; }
@@ -204,7 +210,7 @@
 
 <script>
   // Data is baked in at publish time por Apps Script (sincronización horaria).
-  const DATA = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-22T16:00:00.000Z"},"usd_blue":{"compra":1535,"venta":1555,"updated_at":"2026-09-22T18:58:00.000Z"},"eur_oficial":{"compra":1720.0645,"venta":1734.1356,"updated_at":"2026-09-22T15:49:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":null,"eur_oficial":null},"last_sync":"2026-09-22T19:45:38.581Z"};
+  const DATA = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-22T17:00:00.000Z"},"usd_blue":{"compra":1535,"venta":1555,"updated_at":"2026-09-22T19:59:00.000Z"},"eur_oficial":{"compra":1720.0645,"venta":1734.1356,"updated_at":"2026-09-22T16:49:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":null,"eur_oficial":null},"last_sync":"2026-09-22T20:45:38.406Z"};
   const PAGE_URL = "https://sanjuandolar.com";
 
   const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
