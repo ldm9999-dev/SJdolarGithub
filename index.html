@@ -1,0 +1,289 @@
+<title>Pizarra Cambiaria</title>
+<style>
+  :root {
+    --bg: #0b0d0a;
+    --bg-line: #20261f;
+    --ink: #f4f6ef;
+    --ink-soft: #93a08d;
+    --card-bg: #12160f;
+    --card-line: #232b20;
+    --gold: #e8b923;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    padding: clamp(20px, 5vw, 48px) 20px 40px;
+  }
+
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--bg-line);
+    margin-bottom: 28px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+
+  .brand .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4bd97a, #1f9a52);
+    flex: none;
+  }
+
+  .brand h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(26px, 5vw, 34px);
+    margin: 0;
+    color: var(--gold);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .brand p { margin: 2px 0 0; color: var(--ink-soft); font-size: 13px; }
+  .status { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-line);
+    border-top: 5px solid var(--accent);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .flag { font-size: 28px; line-height: 1; }
+
+  .card-title h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: clamp(20px, 4vw, 24px);
+    margin: 0;
+    color: var(--accent);
+  }
+
+  .badge {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge.auto { background: transparent; color: var(--ink-soft); border: 1px solid var(--card-line); }
+  .badge.manual { background: var(--accent); color: #0b0d0a; }
+
+  .figures {
+    display: flex;
+    gap: 28px;
+  }
+
+  .figure { flex: 1; }
+
+  .figure .k {
+    display: block;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+
+  .figure .v {
+    font-family: "Fraunces", Georgia, serif;
+    font-variant-numeric: tabular-nums;
+    font-style: italic;
+    font-size: clamp(30px, 7vw, 42px);
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+    line-height: 1.1;
+  }
+
+  .updated {
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0.85;
+  }
+
+  .share-row { display: flex; justify-content: center; margin-bottom: 22px; }
+
+  .share {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25d366;
+    color: #0b1a10;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 11px 22px;
+    border-radius: 100px;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+  }
+  .share svg { width: 16px; height: 16px; fill: #0b1a10; }
+
+  .foot {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <span class="dot"></span>
+      <div>
+        <h1>Pizarra Cambiaria</h1>
+        <p>Dólar y euro, a mano</p>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="share-row">
+    <a class="share" id="shareLink" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.2 7c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.4 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.6 10.2 22 12 22c5.5 0 10-4.4 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3C4.4 15 4 13.5 4 12 4 7.5 7.6 4 12 4s8 3.5 8 8-3.6 8.2-8 8.2z"/></svg>
+      Compartir por WhatsApp
+    </a>
+  </div>
+
+  <div class="foot" id="syncNote"></div>
+</div>
+
+<script>
+  // Data is baked in at publish time por Apps Script (sincronización horaria).
+  const DATA = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-22T15:00:00.000Z"},"usd_blue":{"compra":1535,"venta":1555,"updated_at":"2026-09-22T17:58:00.000Z"},"eur_oficial":{"compra":1724.128,"venta":1738.2234,"updated_at":"2026-09-22T14:53:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":null,"eur_oficial":null},"last_sync":"2026-09-22T18:22:31.540Z"};
+  const PAGE_URL = "https://sanjuandolar.com";
+
+  const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const dtf = new Intl.DateTimeFormat("es-AR", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    day: "2-digit", month: "2-digit", year: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: false,
+  });
+
+  function fechaHs(iso) {
+    if (!iso) return "sin datos";
+    const parts = dtf.formatToParts(new Date(iso)).reduce((a, p) => (a[p.type] = p.value, a), {});
+    return `${parts.day}/${parts.month}/${parts.year} - ${parts.hour}:${parts.minute} hs.`;
+  }
+
+  function relTime(iso) {
+    if (!iso) return "sin datos";
+    const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (min < 1) return "hace instantes";
+    if (min < 60) return `hace ${min} min`;
+    const hr = Math.round(min / 60);
+    return hr < 24 ? `hace ${hr} h` : `hace ${Math.round(hr / 24)} d`;
+  }
+
+  function cardHTML(cfg) {
+    const active = cfg.manual || cfg.auto;
+    const isManual = !!cfg.manual;
+    const badge = isManual
+      ? `<span class="badge manual" title="${(cfg.manual.note || "Actualizado manualmente").replace(/"/g, "&quot;")}">manual</span>`
+      : `<span class="badge auto">auto</span>`;
+    return `
+      <div class="card" style="--accent:${cfg.color}">
+        <div class="card-head">
+          <div class="card-title">
+            <span class="flag">${cfg.flag}</span>
+            <h2>${cfg.label}</h2>
+          </div>
+          ${badge}
+        </div>
+        <div class="figures">
+          <div class="figure">
+            <span class="k">Compra</span>
+            <span class="v">${fmt.format(active.compra)}</span>
+          </div>
+          <div class="figure">
+            <span class="k">Venta</span>
+            <span class="v">${fmt.format(active.venta)}</span>
+          </div>
+        </div>
+        <div class="updated">Actualizado el ${fechaHs(active.updated_at)}</div>
+      </div>`;
+  }
+
+  function render(data) {
+    const m = data.manual || {};
+    // El dólar oficial se sigue guardando en DATA (por si se vuelve a
+    // mostrar más adelante) pero no se muestra en la pizarra.
+    const cards = [
+      { key: "usd_blue", label: "Dólar Blue", flag: "🇺🇸", color: "#2dd4bf", auto: data.usd_blue, manual: m.usd_blue },
+      { key: "eur_oficial", label: "Euro", flag: "🇪🇺", color: "#a3e635", auto: data.eur_oficial, manual: m.eur_oficial },
+    ];
+    document.getElementById("grid").innerHTML = cards.map(cardHTML).join("");
+
+    document.getElementById("syncNote").textContent =
+      `Fuente: DolarAPI · se actualiza automáticamente cada hora`;
+    document.getElementById("status").textContent = `Sincronizado ${relTime(data.last_sync)}`;
+
+    const active = {
+      usdBlue: m.usd_blue || data.usd_blue,
+      eur: m.eur_oficial || data.eur_oficial,
+    };
+    const shareText =
+      `Cotización de hoy 💱\n` +
+      `Dólar blue: $${fmt.format(active.usdBlue.venta)}\n` +
+      `Euro: $${fmt.format(active.eur.venta)}\n\n` +
+      `Mirala actualizada acá: ${PAGE_URL}`;
+    document.getElementById("shareLink").href =
+      "https://wa.me/?text=" + encodeURIComponent(shareText);
+  }
+
+  render(DATA);
+</script>
