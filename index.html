@@ -115,6 +115,14 @@
     margin-bottom: 24px;
   }
 
+  .loading {
+    color: var(--ink-soft);
+    font-size: 14px;
+    text-align: center;
+    padding: 32px 0;
+    width: 100%;
+  }
+
   .card {
     position: relative;
     background: var(--card-bg);
@@ -248,7 +256,7 @@
 </div>
 
 <div class="wrap">
-  <div class="grid" id="grid"></div>
+  <div class="grid" id="grid"><div class="loading">Actualizando cotización…</div></div>
 
   <div class="share-row">
     <a class="share" id="shareLink" href="#" target="_blank" rel="noopener">
@@ -356,16 +364,16 @@
     }
   }
 
-  // 1) Primer pintado instantáneo con los datos que vinieron "horneados"
-  //    en el HTML (generados por Apps Script en la última sincronización).
-  let currentData = {"usd_oficial":{"compra":1490,"venta":1540,"updated_at":"2026-09-23T16:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T18:59:00.000Z"},"eur_oficial":{"compra":1680,"venta":1940,"updated_at":"2026-09-23T19:31:58.522Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-23T19:31:58.522Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1540,"venta":1560}},"eur_oficial":null},"last_sync":"2026-09-23T19:38:13.620Z"};
-  render(currentData);
+  // Los datos que vienen "horneados" en el HTML (generados por Apps Script
+  // en la última sincronización) pueden estar desactualizados unos minutos
+  // -- por eso NO se pintan de entrada. Quedan solo como base/respaldo:
+  // currentData arranca con ellos pero la pantalla se queda en "Actualizando
+  // cotización…" hasta que refreshLive() trae el dato en vivo (blue de
+  // DolarAPI + el override manual vigente desde el Web App) y recién ahí se
+  // pinta por primera vez -- así nunca se ve un valor viejo, ni por un
+  // instante.
+  let currentData = {"usd_oficial":{"compra":1490,"venta":1540,"updated_at":"2026-09-23T16:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T18:59:00.000Z"},"eur_oficial":{"compra":1680,"venta":1940,"updated_at":"2026-09-23T19:31:58.522Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-23T19:31:58.522Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1540,"venta":1560}},"eur_oficial":null},"last_sync":"2026-09-23T19:43:13.441Z"};
 
-  // 2) Apenas carga la página, pedimos los valores en vivo directamente
-  //    (DolarAPI para blue/euro automáticos, el Web App de Apps Script
-  //    para saber si hay algún override manual cargado) y volvemos a
-  //    pintar con eso -- así no hay que esperar a que GitHub Pages
-  //    actualice el HTML publicado.
   async function fetchJSON(url) {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -379,6 +387,14 @@
       fetchJSON("https://dolarapi.com/v1/dolares/blue"),
       fetchJSON(APPS_SCRIPT_URL),
     ]);
+
+    // Si las dos llamadas en vivo fallan (ej. sin conexión), no nos quedamos
+    // con la pantalla de "Actualizando…" para siempre: mostramos el dato
+    // horneado como respaldo, aunque pueda estar unos minutos viejo.
+    if (blue.status === "rejected" && state.status === "rejected") {
+      render(currentData);
+      return;
+    }
 
     const next = Object.assign({}, currentData);
     if (blue.status === "fulfilled") {
