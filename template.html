@@ -31,78 +31,119 @@
       url("fondo-dolares.jpg") center / cover no-repeat fixed;
     color: var(--ink);
     font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
-    padding: clamp(16px, 5vw, 48px) 20px 32px;
   }
 
   @media (max-width: 480px) {
-    body { padding-left: 12px; padding-right: 12px; background-attachment: scroll; }
+    body { background-attachment: scroll; }
   }
 
-  .wrap { max-width: 640px; margin: 0 auto; }
+  .page-pad { padding: 0 20px 32px; }
+  @media (max-width: 480px) {
+    .page-pad { padding-left: 12px; padding-right: 12px; }
+  }
 
-  /* Espacios publicitarios: reemplazá el contenido de estos divs por el
-     código real del anuncio (por ejemplo Google AdSense) cuando lo tengas.
-     Mientras tanto muestran un placeholder para reservar el lugar. */
-  .ad-slot {
-    max-width: 640px;
-    margin: 0 auto 20px;
-    min-height: 90px;
+  .wrap { max-width: 720px; margin: 0 auto; }
+
+  /* Barra superior estilo "cabecera de sitio": fondo sólido oscuro de punta
+     a punta, con un ícono redondo y el nombre del sitio. */
+  .topbar {
+    background: #05060a;
+    border-bottom: 1px solid var(--bg-line);
+    padding: 14px 20px;
+    margin-bottom: 20px;
+  }
+  .topbar-inner {
+    max-width: 720px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dashed var(--card-line);
-    border-radius: 12px;
-    background: rgba(18, 22, 15, 0.45);
+    gap: 10px;
+  }
+  .topbar-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4bd97a, #1f9a52);
+    color: #06210f;
+    font-weight: 800;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+  .topbar-title {
+    font-weight: 700;
+    font-size: clamp(18px, 4.5vw, 24px);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .topbar-title .accent { color: var(--gold); }
+
+  .tagline {
+    text-align: center;
     color: var(--ink-soft);
+    font-size: 13px;
+    margin: 0 0 18px;
+  }
+
+  /* Espacios publicitarios: reemplazá el contenido de estos divs por el
+     código real del anuncio (por ejemplo Google AdSense, o un banner de un
+     comercio) cuando lo tengas. Mientras tanto muestran un placeholder que
+     ya respeta el tamaño/forma para no romper el diseño al reemplazarlo. */
+  .ad-slot {
+    max-width: 720px;
+    margin: 0 auto 20px;
+    min-height: 86px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px dashed rgba(244, 246, 239, 0.28);
+    border-radius: 12px;
+    background: rgba(244, 246, 239, 0.06);
+    color: var(--ink-soft);
+    padding: 10px 16px;
+    text-align: center;
+  }
+  .ad-slot .ad-label {
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    text-align: center;
-    padding: 8px 12px;
   }
   .ad-slot.ad-bottom { margin: 24px auto 0; }
 
-  header {
+  .status {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  .brand-line {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--bg-line);
-    margin-bottom: 28px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 4px;
   }
-
-  .brand { display: flex; align-items: center; gap: 10px; }
-
-  .brand .dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #4bd97a, #1f9a52);
-    flex: none;
-  }
-
-  .brand h1 {
+  .brand-line h1 {
     font-family: "Fraunces", Georgia, serif;
-    font-optical-sizing: auto;
     font-style: italic;
     font-weight: 700;
-    font-size: clamp(26px, 5vw, 34px);
+    font-size: clamp(22px, 5vw, 28px);
     margin: 0;
     color: var(--gold);
-    letter-spacing: -0.01em;
-    text-wrap: balance;
+    text-align: center;
   }
-
-  .brand p { margin: 2px 0 0; color: var(--ink-soft); font-size: 13px; }
-  .status { font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
 
   .grid {
     display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-bottom: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 
   .card {
@@ -112,11 +153,12 @@
     border-top: 5px solid var(--accent);
     border-radius: 14px;
     box-shadow: var(--shadow);
-    padding: 26px 22px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    width: 100%;
+    gap: 16px;
+    flex: 1 1 260px;
+    max-width: 320px;
   }
 
   .card-badge { position: absolute; top: 16px; right: 16px; }
@@ -219,19 +261,30 @@
 </head>
 <body>
 
-<div class="ad-slot ad-top" id="adTop">Espacio publicitario</div>
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="topbar-icon">$</span>
+    <span class="topbar-title">sanjuandolar<span class="accent">.com</span></span>
+  </div>
+</div>
+
+<div class="page-pad">
+
+<!-- ESPACIO PUBLICITARIO (arriba). Reemplazá este div por el código real
+     del anuncio (imagen, logo del comercio, script de AdSense, etc.)
+     cuando lo tengas -- el tamaño/forma ya está pensado para no romper
+     el resto del diseño. -->
+<div class="ad-slot ad-top" id="adTop">
+  <span class="ad-label">Espacio publicitario</span>
+</div>
 
 <div class="wrap">
-  <header>
-    <div class="brand">
-      <span class="dot"></span>
-      <div>
-        <h1>Dólar San Juan</h1>
-        <p>Dólar y euro, a mano</p>
-      </div>
-    </div>
-    <div class="status" id="status"></div>
-  </header>
+  <div class="brand-line">
+    <span class="topbar-icon" style="width:20px;height:20px;font-size:11px;">$</span>
+    <h1>Dólar San Juan</h1>
+  </div>
+  <p class="tagline">Dólar y euro, a mano</p>
+  <div class="status" id="status"></div>
 
   <div class="grid" id="grid"></div>
 
@@ -245,7 +298,12 @@
   <div class="foot" id="syncNote"></div>
 </div>
 
-<div class="ad-slot ad-bottom" id="adBottom">Espacio publicitario</div>
+<!-- ESPACIO PUBLICITARIO (abajo). Mismo criterio que el de arriba. -->
+<div class="ad-slot ad-bottom" id="adBottom">
+  <span class="ad-label">Espacio publicitario</span>
+</div>
+
+</div><!-- /.page-pad -->
 
 <script>
   // URL del Web App de Apps Script (GET) -- devuelve el estado actual de
