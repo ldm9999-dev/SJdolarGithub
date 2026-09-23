@@ -81,13 +81,6 @@
   }
   .topbar-title .accent { color: var(--gold); }
 
-  .tagline {
-    text-align: center;
-    color: var(--ink-soft);
-    font-size: 13px;
-    margin: 0 0 18px;
-  }
-
   /* Espacios publicitarios: reemplazá el contenido de estos divs por el
      código real del anuncio (por ejemplo Google AdSense, o un banner de un
      comercio) cuando lo tengas. Mientras tanto muestran un placeholder que
@@ -114,30 +107,6 @@
   }
   .ad-slot.ad-bottom { margin: 24px auto 0; }
 
-  .status {
-    text-align: center;
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin-bottom: 18px;
-  }
-
-  .brand-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 0 0 4px;
-  }
-  .brand-line h1 {
-    font-family: "Fraunces", Georgia, serif;
-    font-style: italic;
-    font-weight: 700;
-    font-size: clamp(22px, 5vw, 28px);
-    margin: 0;
-    color: var(--gold);
-    text-align: center;
-  }
-
   .grid {
     display: flex;
     flex-wrap: wrap;
@@ -158,7 +127,9 @@
     flex-direction: column;
     gap: 16px;
     flex: 1 1 260px;
+    min-width: 0;
     max-width: 320px;
+    overflow: hidden;
   }
 
   .card-badge { position: absolute; top: 16px; right: 16px; }
@@ -197,11 +168,11 @@
   .figures {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 24px;
     text-align: center;
   }
 
-  .figure { flex: 0 1 auto; }
+  .figure { flex: 0 1 auto; min-width: 0; }
 
   .figure .k {
     display: block;
@@ -216,11 +187,12 @@
     font-family: "Fraunces", Georgia, serif;
     font-variant-numeric: tabular-nums;
     font-style: italic;
-    font-size: clamp(30px, 7vw, 42px);
+    font-size: clamp(22px, 5.5vw, 32px);
     font-weight: 700;
     color: var(--accent);
     display: block;
     line-height: 1.1;
+    white-space: nowrap;
   }
 
   .updated {
@@ -264,7 +236,7 @@
 <div class="topbar">
   <div class="topbar-inner">
     <span class="topbar-icon">$</span>
-    <span class="topbar-title">sanjuandolar<span class="accent">.com</span></span>
+    <span class="topbar-title">Dólar <span class="accent">San Juan</span></span>
   </div>
 </div>
 
@@ -279,13 +251,6 @@
 </div>
 
 <div class="wrap">
-  <div class="brand-line">
-    <span class="topbar-icon" style="width:20px;height:20px;font-size:11px;">$</span>
-    <h1>Dólar San Juan</h1>
-  </div>
-  <p class="tagline">Dólar y euro, a mano</p>
-  <div class="status" id="status"></div>
-
   <div class="grid" id="grid"></div>
 
   <div class="share-row">
@@ -294,8 +259,6 @@
       Compartir por WhatsApp
     </a>
   </div>
-
-  <div class="foot" id="syncNote"></div>
 </div>
 
 <!-- ESPACIO PUBLICITARIO (abajo). Mismo criterio que el de arriba. -->
@@ -370,10 +333,6 @@
       { key: "eur_oficial", label: "Euro", flag: "🇪🇺", color: "#a3e635", auto: data.eur_oficial, manual: m.eur_oficial },
     ];
     document.getElementById("grid").innerHTML = cards.map(cardHTML).join("");
-
-    document.getElementById("syncNote").textContent =
-      `Fuente: DolarAPI · valores en vivo`;
-    document.getElementById("status").textContent = `Sincronizado ${relTime(data.last_sync)}`;
 
     const activeBlue = m.usd_blue || data.usd_blue;
     const activeEur = m.eur_oficial || data.eur_oficial;
