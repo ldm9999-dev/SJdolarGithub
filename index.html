@@ -271,7 +271,8 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyi2aKtpl3bVKSS2eQVynH8SPjNbCkGxFBtRzhLzUyDfCz7MPeMwm_hJ_wwcXfZ-UM/exec";
   const PAGE_URL = "https://sanjuandolar.com";
 
-  const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Compra y venta se muestran como números enteros, sin decimales ni coma.
+  const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const dtf = new Intl.DateTimeFormat("es-AR", {
     timeZone: "America/Argentina/Buenos_Aires",
     day: "2-digit", month: "2-digit", year: "2-digit",
@@ -310,11 +311,11 @@
         <div class="figures">
           <div class="figure">
             <span class="k">Compra</span>
-            <span class="v">${fmt.format(active.compra)}</span>
+            <span class="v">${fmt.format(Math.ceil(active.compra))}</span>
           </div>
           <div class="figure">
             <span class="k">Venta</span>
-            <span class="v">${fmt.format(active.venta)}</span>
+            <span class="v">${fmt.format(Math.ceil(active.venta))}</span>
           </div>
         </div>
         <div class="updated">Actualizado el ${fechaHs(active.updated_at)}</div>
@@ -346,7 +347,7 @@
 
   // 1) Primer pintado instantáneo con los datos que vinieron "horneados"
   //    en el HTML (generados por Apps Script en la última sincronización).
-  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T14:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T16:59:00.000Z"},"eur_oficial":{"compra":1720.0645,"venta":1734.1356,"updated_at":"2026-09-23T13:57:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1490,"venta":1560,"updated_at":"2026-09-23T17:32:54.898Z","note":"Actualizado manualmente vía Telegram","auto_baseline":null},"eur_oficial":null},"last_sync":"2026-09-23T17:33:13.445Z"};
+  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T14:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T16:59:00.000Z"},"eur_oficial":{"compra":1721,"venta":1735,"updated_at":"2026-09-23T13:57:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1490,"venta":1560,"updated_at":"2026-09-23T17:32:54.898Z","note":"Actualizado manualmente vía Telegram","auto_baseline":null},"eur_oficial":null},"last_sync":"2026-09-23T17:38:13.966Z"};
   render(currentData);
 
   // 2) Apenas carga la página, pedimos los valores en vivo directamente
