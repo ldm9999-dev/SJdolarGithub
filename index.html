@@ -4,22 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Cotización del dólar blue y el euro en San Juan, actualizada en vivo.">
-<meta name="theme-color" content="#0a0d14">
+<meta name="theme-color" content="#0b0d0a">
 <title>Dólar San Juan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=IBM+Plex+Sans:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #0a0d14;
-    --bg-line: #1d2430;
-    --ink: #f2f4f8;
-    --ink-soft: #8791a3;
-    --card-bg: #10141d;
-    --card-bg-2: #131826;
-    --card-line: #232a38;
-    --gold: #d4af37;
-    --blue: #4fa3e3;
-    --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    --bg: #0b0d0a;
+    --bg-line: #20261f;
+    --ink: #f4f6ef;
+    --ink-soft: #93a08d;
+    --card-bg: #12160f;
+    --card-line: #232b20;
+    --gold: #e8b923;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   }
 
   * { box-sizing: border-box; }
@@ -29,47 +27,45 @@
   body {
     margin: 0;
     background:
-      linear-gradient(180deg, rgba(6, 8, 13, 0.9), rgba(6, 8, 13, 0.96)),
+      linear-gradient(rgba(8, 10, 7, 0.58), rgba(8, 10, 7, 0.74)),
       url("fondo-dolares.jpg") center / cover no-repeat fixed;
     color: var(--ink);
-    font-family: "Inter", -apple-system, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-family: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
   }
 
   @media (max-width: 480px) {
     body { background-attachment: scroll; }
   }
 
-  .page-pad { padding: 0 20px 40px; }
+  .page-pad { padding: 0 20px 32px; }
   @media (max-width: 480px) {
-    .page-pad { padding-left: 14px; padding-right: 14px; }
+    .page-pad { padding-left: 12px; padding-right: 12px; }
   }
 
-  .wrap { max-width: 760px; margin: 0 auto; }
+  .wrap { max-width: 720px; margin: 0 auto; }
 
-  /* Barra superior: fondo sólido de punta a punta con línea de acento en la
-     base, ícono de marca y nombre del sitio -- estilo cabecera institucional. */
+  /* Barra superior estilo "cabecera de sitio": fondo sólido oscuro de punta
+     a punta, con un ícono redondo y el nombre del sitio. */
   .topbar {
-    background: #05070b;
+    background: #05060a;
     border-bottom: 1px solid var(--bg-line);
-    box-shadow: 0 1px 0 rgba(212, 175, 55, 0.18);
-    padding: 16px 20px;
-    margin-bottom: 28px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
   }
   .topbar-inner {
-    max-width: 760px;
+    max-width: 720px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 11px;
+    gap: 10px;
   }
   .topbar-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 9px;
-    background: linear-gradient(155deg, #e8c968, var(--gold) 60%, #b8902a);
-    color: #221a04;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #4bd97a, #1f9a52);
+    color: #06210f;
     font-weight: 800;
     font-size: 16px;
     display: flex;
@@ -79,7 +75,7 @@
   }
   .topbar-title {
     font-weight: 700;
-    font-size: clamp(17px, 4.2vw, 22px);
+    font-size: clamp(18px, 4.5vw, 24px);
     letter-spacing: -0.01em;
     color: var(--ink);
   }
@@ -90,178 +86,145 @@
      comercio) cuando lo tengas. Mientras tanto muestran un placeholder que
      ya respeta el tamaño/forma para no romper el diseño al reemplazarlo. */
   .ad-slot {
-    max-width: 760px;
-    margin: 0 auto 24px;
-    min-height: 80px;
+    max-width: 720px;
+    margin: 0 auto 20px;
+    min-height: 86px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border: 1px solid var(--card-line);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(244, 246, 239, 0.28);
+    border-radius: 12px;
+    background: rgba(244, 246, 239, 0.06);
     color: var(--ink-soft);
     padding: 10px 16px;
     text-align: center;
   }
   .ad-slot .ad-label {
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-weight: 600;
   }
-  .ad-slot.ad-bottom { margin: 28px auto 0; }
+  .ad-slot.ad-bottom { margin: 24px auto 0; }
 
   .grid {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 18px;
-    margin-bottom: 28px;
+    gap: 16px;
+    margin-bottom: 24px;
   }
 
   .card {
     position: relative;
-    background: linear-gradient(175deg, var(--card-bg-2), var(--card-bg));
+    background: var(--card-bg);
     border: 1px solid var(--card-line);
-    border-radius: 16px;
+    border-top: 5px solid var(--accent);
+    border-radius: 14px;
     box-shadow: var(--shadow);
-    padding: 26px 22px 22px;
+    padding: 24px 20px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    flex: 1 1 270px;
+    gap: 16px;
+    flex: 1 1 260px;
     min-width: 0;
-    max-width: 330px;
+    max-width: 320px;
     overflow: hidden;
   }
 
-  .card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  }
-
-  .card-badge { position: absolute; top: 18px; right: 18px; }
+  .card-badge { position: absolute; top: 16px; right: 16px; }
 
   .badge {
-    font-size: 9.5px;
-    letter-spacing: 0.08em;
+    font-size: 10px;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding: 4px 9px;
-    border-radius: 5px;
-    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-weight: 600;
     white-space: nowrap;
   }
-  .badge.auto { background: rgba(255, 255, 255, 0.05); color: var(--ink-soft); border: 1px solid var(--card-line); }
-  .badge.manual { background: rgba(212, 175, 55, 0.14); color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.35); }
+  .badge.auto { background: transparent; color: var(--ink-soft); border: 1px solid var(--card-line); }
+  .badge.manual { background: var(--accent); color: #0b0d0a; }
 
   .card-title {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    gap: 6px;
+    text-align: center;
   }
 
-  .curr-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Fraunces", Georgia, serif;
-    font-weight: 600;
-    font-size: 18px;
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  }
+  .flag { font-size: 42px; line-height: 1; }
 
   .card-title h2 {
     font-family: "Fraunces", Georgia, serif;
-    font-weight: 600;
-    font-size: clamp(24px, 6vw, 30px);
+    font-weight: 700;
+    font-size: clamp(30px, 8vw, 42px);
     margin: 0;
-    color: var(--ink);
-    letter-spacing: -0.01em;
+    color: var(--accent);
   }
 
   .figures {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 24px;
     text-align: center;
-    border-top: 1px solid var(--card-line);
-    padding-top: 16px;
   }
 
-  .figure { flex: 1 1 0; min-width: 0; }
-  .figure + .figure { border-left: 1px solid var(--card-line); }
+  .figure { flex: 0 1 auto; min-width: 0; }
 
   .figure .k {
     display: block;
-    font-size: 10.5px;
-    letter-spacing: 0.08em;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-weight: 600;
     color: var(--ink-soft);
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .figure .v {
+    font-family: "Fraunces", Georgia, serif;
     font-variant-numeric: tabular-nums;
+    font-size: clamp(22px, 5.5vw, 32px);
     font-weight: 700;
-    font-size: clamp(20px, 5vw, 27px);
-    letter-spacing: -0.01em;
-    color: var(--ink);
+    color: var(--accent);
     display: block;
     line-height: 1.1;
     white-space: nowrap;
   }
 
-  .figure .v .cur {
-    font-size: 0.6em;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin-right: 1px;
-  }
-
   .updated {
-    font-size: 11.5px;
-    color: var(--ink-soft);
+    font-size: 12.5px;
+    color: var(--accent);
+    opacity: 0.85;
     text-align: center;
-    letter-spacing: 0.01em;
   }
 
-  .share-row { display: flex; justify-content: center; margin-bottom: 24px; }
+  .share-row { display: flex; justify-content: center; margin-bottom: 22px; }
 
   .share {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #1e8f56;
-    color: #f2f4f8;
+    background: #25d366;
+    color: #0b1a10;
     font-weight: 600;
-    font-size: 13.5px;
+    font-size: 14px;
     padding: 11px 22px;
-    border-radius: 9px;
+    border-radius: 100px;
     text-decoration: none;
     box-shadow: var(--shadow);
-    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  .share svg { width: 16px; height: 16px; fill: #f2f4f8; }
+  .share svg { width: 16px; height: 16px; fill: #0b1a10; }
 
   .foot {
-    font-size: 11.5px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
     color: var(--ink-soft);
     text-align: center;
-    border-top: 1px solid var(--card-line);
-    padding-top: 18px;
-    line-height: 1.6;
   }
 </style>
 </head>
@@ -293,8 +256,6 @@
       Compartir por WhatsApp
     </a>
   </div>
-
-  <div class="foot">Cotizaciones informativas, no oficiales. Los valores pueden variar según el punto de cambio.</div>
 </div>
 
 <!-- ESPACIO PUBLICITARIO (abajo). Mismo criterio que el de arriba. -->
@@ -343,17 +304,17 @@
       <div class="card" style="--accent:${cfg.color}">
         <div class="card-badge">${badge}</div>
         <div class="card-title">
-          <span class="curr-icon">${cfg.symbol}</span>
+          <span class="flag">${cfg.flag}</span>
           <h2>${cfg.label}</h2>
         </div>
         <div class="figures">
           <div class="figure">
             <span class="k">Compra</span>
-            <span class="v"><span class="cur">$</span>${fmt.format(active.compra)}</span>
+            <span class="v">${fmt.format(active.compra)}</span>
           </div>
           <div class="figure">
             <span class="k">Venta</span>
-            <span class="v"><span class="cur">$</span>${fmt.format(active.venta)}</span>
+            <span class="v">${fmt.format(active.venta)}</span>
           </div>
         </div>
         <div class="updated">Actualizado el ${fechaHs(active.updated_at)}</div>
@@ -365,8 +326,8 @@
     // El dólar oficial se sigue guardando en DATA (por si se vuelve a
     // mostrar más adelante) pero no se muestra en la pizarra.
     const cards = [
-      { key: "usd_blue", label: "Dólar", symbol: "$", color: "#4fa3e3", auto: data.usd_blue, manual: m.usd_blue },
-      { key: "eur_oficial", label: "Euro", symbol: "€", color: "#d4af37", auto: data.eur_oficial, manual: m.eur_oficial },
+      { key: "usd_blue", label: "Dólar", flag: "🇺🇸", color: "#2dd4bf", auto: data.usd_blue, manual: m.usd_blue },
+      { key: "eur_oficial", label: "Euro", flag: "🇪🇺", color: "#a3e635", auto: data.eur_oficial, manual: m.eur_oficial },
     ];
     document.getElementById("grid").innerHTML = cards.map(cardHTML).join("");
 
@@ -385,7 +346,7 @@
 
   // 1) Primer pintado instantáneo con los datos que vinieron "horneados"
   //    en el HTML (generados por Apps Script en la última sincronización).
-  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T13:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T15:59:00.000Z"},"eur_oficial":{"compra":1720.0645,"venta":1734.1356,"updated_at":"2026-09-23T12:56:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1480,"venta":1550,"updated_at":"2026-09-23T16:51:23.862Z","note":"Actualizado manualmente vía Telegram"},"eur_oficial":null},"last_sync":"2026-09-23T16:53:14.270Z"};
+  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T13:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T15:59:00.000Z"},"eur_oficial":{"compra":1720.0645,"venta":1734.1356,"updated_at":"2026-09-23T12:56:00.000Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1480,"venta":1550,"updated_at":"2026-09-23T16:51:23.862Z","note":"Actualizado manualmente vía Telegram"},"eur_oficial":null},"last_sync":"2026-09-23T16:58:13.138Z"};
   render(currentData);
 
   // 2) Apenas carga la página, pedimos los valores en vivo directamente
