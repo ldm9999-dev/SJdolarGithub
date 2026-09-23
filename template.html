@@ -271,7 +271,8 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyi2aKtpl3bVKSS2eQVynH8SPjNbCkGxFBtRzhLzUyDfCz7MPeMwm_hJ_wwcXfZ-UM/exec";
   const PAGE_URL = "https://sanjuandolar.com";
 
-  const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Compra y venta se muestran como números enteros, sin decimales ni coma.
+  const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
   const dtf = new Intl.DateTimeFormat("es-AR", {
     timeZone: "America/Argentina/Buenos_Aires",
     day: "2-digit", month: "2-digit", year: "2-digit",
@@ -310,11 +311,11 @@
         <div class="figures">
           <div class="figure">
             <span class="k">Compra</span>
-            <span class="v">${fmt.format(active.compra)}</span>
+            <span class="v">${fmt.format(Math.ceil(active.compra))}</span>
           </div>
           <div class="figure">
             <span class="k">Venta</span>
-            <span class="v">${fmt.format(active.venta)}</span>
+            <span class="v">${fmt.format(Math.ceil(active.venta))}</span>
           </div>
         </div>
         <div class="updated">Actualizado el ${fechaHs(active.updated_at)}</div>
