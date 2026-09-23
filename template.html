@@ -273,6 +273,13 @@
 
   // Compra y venta se muestran como números enteros, sin decimales ni coma.
   const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+  // Redondea SIEMPRE para arriba (nunca para abajo) al múltiplo de 10 más
+  // cercano, para que compra y venta terminen siempre en 0 (ej. 1669 -> 1670,
+  // 1928 -> 1930). Se aplica a todo lo que se muestra: dólar y euro.
+  function roundUp10(value) {
+    return Math.ceil(value / 10) * 10;
+  }
   const dtf = new Intl.DateTimeFormat("es-AR", {
     timeZone: "America/Argentina/Buenos_Aires",
     day: "2-digit", month: "2-digit", year: "2-digit",
@@ -310,11 +317,11 @@
         <div class="figures">
           <div class="figure">
             <span class="k">Compra</span>
-            <span class="v">${fmt.format(Math.ceil(active.compra))}</span>
+            <span class="v">${fmt.format(roundUp10(active.compra))}</span>
           </div>
           <div class="figure">
             <span class="k">Venta</span>
-            <span class="v">${fmt.format(Math.ceil(active.venta))}</span>
+            <span class="v">${fmt.format(roundUp10(active.venta))}</span>
           </div>
         </div>
         <div class="updated">Actualizado el ${fechaHs(active.updated_at)}</div>
@@ -374,9 +381,12 @@
 
     const next = Object.assign({}, currentData);
     if (blue.status === "fulfilled") {
+      // Redondeado acá mismo (para arriba, al múltiplo de 10) para que el
+      // cálculo del euro de abajo use el mismo valor de dólar que se termina
+      // mostrando en pantalla.
       next.usd_blue = {
-        compra: blue.value.compra,
-        venta: blue.value.venta,
+        compra: roundUp10(blue.value.compra),
+        venta: roundUp10(blue.value.venta),
         updated_at: blue.value.fechaActualizacion,
       };
     }
@@ -386,12 +396,13 @@
 
     // El euro está atado al dólar: compra = dólar compra +12%, venta =
     // dólar venta +22%, sobre el dólar VIGENTE (manual si hay, si no el
-    // automático), redondeado siempre para arriba.
+    // automático), redondeado siempre para arriba al múltiplo de 10 más
+    // cercano.
     const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
     if (activeDollar) {
       next.eur_oficial = {
-        compra: Math.ceil(activeDollar.compra * 1.12),
-        venta: Math.ceil(activeDollar.venta * 1.22),
+        compra: roundUp10(activeDollar.compra * 1.12),
+        venta: roundUp10(activeDollar.venta * 1.22),
         updated_at: activeDollar.updated_at,
       };
     }
