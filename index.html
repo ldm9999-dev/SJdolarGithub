@@ -295,11 +295,10 @@
   }
 
   function cardHTML(cfg) {
-    const active = cfg.manual || cfg.auto;
+    const active = cfg.active;
     if (!active) return "";
-    const isManual = !!cfg.manual;
-    const badge = isManual
-      ? `<span class="badge manual" title="${(cfg.manual.note || "Actualizado manualmente").replace(/"/g, "&quot;")}">manual</span>`
+    const badge = cfg.isManual
+      ? `<span class="badge manual" title="${(cfg.note || "Actualizado manualmente").replace(/"/g, "&quot;")}">manual</span>`
       : `<span class="badge auto">auto</span>`;
     return `
       <div class="card" style="--accent:${cfg.color}">
@@ -324,16 +323,20 @@
 
   function render(data) {
     const m = data.manual || {};
+    // El euro está atado al dólar (ver refreshLive / Code.gs), así que su
+    // insignia manual/auto y su nota siguen al dólar, aunque el número en
+    // sí (data.eur_oficial) ya viene calculado -- nunca sale de m.eur_oficial.
+    const dollarIsManual = !!m.usd_blue;
     // El dólar oficial se sigue guardando en DATA (por si se vuelve a
     // mostrar más adelante) pero no se muestra en la pizarra.
     const cards = [
-      { key: "usd_blue", label: "Dólar", flag: "🇺🇸", color: "#2dd4bf", auto: data.usd_blue, manual: m.usd_blue },
-      { key: "eur_oficial", label: "Euro", flag: "🇪🇺", color: "#a3e635", auto: data.eur_oficial, manual: m.eur_oficial },
+      { key: "usd_blue", label: "Dólar", flag: "🇺🇸", color: "#2dd4bf", active: m.usd_blue || data.usd_blue, isManual: dollarIsManual, note: dollarIsManual && m.usd_blue.note },
+      { key: "eur_oficial", label: "Euro", flag: "🇪🇺", color: "#a3e635", active: data.eur_oficial, isManual: dollarIsManual, note: dollarIsManual && m.usd_blue.note },
     ];
     document.getElementById("grid").innerHTML = cards.map(cardHTML).join("");
 
     const activeBlue = m.usd_blue || data.usd_blue;
-    const activeEur = m.eur_oficial || data.eur_oficial;
+    const activeEur = data.eur_oficial;
     if (activeBlue && activeEur) {
       const shareText =
         `Cotización de hoy 💱\n` +
@@ -347,7 +350,7 @@
 
   // 1) Primer pintado instantáneo con los datos que vinieron "horneados"
   //    en el HTML (generados por Apps Script en la última sincronización).
-  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T14:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T16:59:00.000Z"},"eur_oficial":{"compra":1714,"venta":1884,"updated_at":"2026-09-23T17:44:14.667Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1490,"venta":1570,"updated_at":"2026-09-23T17:44:14.667Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1540,"venta":1560}},"eur_oficial":null},"last_sync":"2026-09-23T17:48:13.690Z"};
+  let currentData = {"usd_oficial":{"compra":1485,"venta":1535,"updated_at":"2026-09-23T14:00:00.000Z"},"usd_blue":{"compra":1540,"venta":1560,"updated_at":"2026-09-23T16:59:00.000Z"},"eur_oficial":{"compra":1714,"venta":1884,"updated_at":"2026-09-23T17:44:14.667Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1490,"venta":1570,"updated_at":"2026-09-23T17:44:14.667Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1540,"venta":1560}},"eur_oficial":null},"last_sync":"2026-09-23T17:53:15.806Z"};
   render(currentData);
 
   // 2) Apenas carga la página, pedimos los valores en vivo directamente
@@ -362,9 +365,10 @@
   }
 
   async function refreshLive() {
-    const [blue, eur, state] = await Promise.allSettled([
+    // Ya no se consulta el endpoint de euro de DolarAPI: el euro se calcula
+    // siempre a partir del dólar (ver más abajo).
+    const [blue, state] = await Promise.allSettled([
       fetchJSON("https://dolarapi.com/v1/dolares/blue"),
-      fetchJSON("https://dolarapi.com/v1/cotizaciones/eur"),
       fetchJSON(APPS_SCRIPT_URL),
     ]);
 
@@ -376,16 +380,22 @@
         updated_at: blue.value.fechaActualizacion,
       };
     }
-    if (eur.status === "fulfilled") {
-      next.eur_oficial = {
-        compra: eur.value.compra,
-        venta: eur.value.venta,
-        updated_at: eur.value.fechaActualizacion,
-      };
-    }
     if (state.status === "fulfilled" && state.value && state.value.manual) {
       next.manual = state.value.manual;
     }
+
+    // El euro está atado al dólar: compra = dólar compra +15%, venta =
+    // dólar venta +20%, sobre el dólar VIGENTE (manual si hay, si no el
+    // automático), redondeado siempre para arriba.
+    const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
+    if (activeDollar) {
+      next.eur_oficial = {
+        compra: Math.ceil(activeDollar.compra * 1.15),
+        venta: Math.ceil(activeDollar.venta * 1.20),
+        updated_at: activeDollar.updated_at,
+      };
+    }
+
     next.last_sync = new Date().toISOString();
 
     currentData = next;
