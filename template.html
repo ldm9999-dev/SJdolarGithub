@@ -384,14 +384,14 @@
       next.manual = state.value.manual;
     }
 
-    // El euro está atado al dólar: compra = dólar compra +15%, venta =
-    // dólar venta +20%, sobre el dólar VIGENTE (manual si hay, si no el
+    // El euro está atado al dólar: compra = dólar compra +12%, venta =
+    // dólar venta +22%, sobre el dólar VIGENTE (manual si hay, si no el
     // automático), redondeado siempre para arriba.
     const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
     if (activeDollar) {
       next.eur_oficial = {
-        compra: Math.ceil(activeDollar.compra * 1.15),
-        venta: Math.ceil(activeDollar.venta * 1.20),
+        compra: Math.ceil(activeDollar.compra * 1.12),
+        venta: Math.ceil(activeDollar.venta * 1.22),
         updated_at: activeDollar.updated_at,
       };
     }
