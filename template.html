@@ -130,10 +130,10 @@
     border-top: 5px solid var(--accent);
     border-radius: 14px;
     box-shadow: var(--shadow);
-    padding: 24px 20px;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     flex: 1 1 260px;
     min-width: 0;
     max-width: 320px;
@@ -156,18 +156,19 @@
 
   .card-title {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 10px;
     text-align: center;
   }
 
-  .flag { font-size: 42px; line-height: 1; }
+  .flag { font-size: 28px; line-height: 1; }
 
   .card-title h2 {
     font-family: "Fraunces", Georgia, serif;
     font-weight: 700;
-    font-size: clamp(30px, 8vw, 42px);
+    font-size: clamp(24px, 7vw, 34px);
     margin: 0;
     color: var(--accent);
   }
