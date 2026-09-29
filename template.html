@@ -436,14 +436,16 @@
       next.manual = state.value.manual;
     }
 
-    // El euro está atado al dólar: compra = dólar compra +12%, venta =
-    // dólar venta +22%, sobre el dólar VIGENTE (manual si hay, si no el
-    // automático), redondeado al múltiplo de 10 más cercano.
+    // El euro está atado siempre a la COMPRA del dólar (el valor más bajo
+    // entre compra y venta) -- nunca a la venta -- sobre el dólar VIGENTE
+    // (manual si hay, si no el automático): compra euro = dólar compra ×
+    // 1,14, venta euro = dólar compra × 1,27, redondeado al múltiplo de 10
+    // más cercano.
     const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
     if (activeDollar) {
       next.eur_oficial = {
-        compra: roundNearest10(activeDollar.compra * 1.12),
-        venta: roundNearest10(activeDollar.venta * 1.22),
+        compra: roundNearest10(activeDollar.compra * 1.14),
+        venta: roundNearest10(activeDollar.compra * 1.27),
         updated_at: activeDollar.updated_at,
       };
     }
