@@ -388,14 +388,17 @@
   }
 
   // Los datos que vienen "horneados" en el HTML (generados por Apps Script
-  // en la última sincronización) pueden estar desactualizados unos minutos
-  // -- por eso NO se pintan de entrada. Quedan solo como base/respaldo:
-  // currentData arranca con ellos pero la pantalla se queda en "Actualizando
-  // cotización…" hasta que refreshLive() trae el dato en vivo (blue de
-  // DolarAPI + el override manual vigente desde el Web App) y recién ahí se
-  // pinta por primera vez -- así nunca se ve un valor viejo, ni por un
-  // instante.
-  let currentData = {"usd_oficial":{"compra":1500,"venta":1550,"updated_at":"2026-09-29T15:00:00.000Z"},"usd_blue":{"compra":1510,"venta":1590,"updated_at":"2026-09-29T17:57:00.000Z"},"eur_oficial":{"compra":1680,"venta":1940,"updated_at":"2026-09-29T17:45:02.714Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-29T17:45:02.714Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1510,"venta":1590}},"eur_oficial":null},"last_sync":"2026-09-29T18:08:39.136Z"};
+  // en la última sincronización, como mucho ~5 minutos de antigüedad) se
+  // pintan YA MISMO, apenas carga la página -- así se ve al instante en vez
+  // de quedarse en "Actualizando cotización…" esperando los pedidos en vivo
+  // (que pueden tardar unos segundos, sobre todo el del Web App de Apps
+  // Script). refreshLive() los reemplaza solos, sin parpadeo, en cuanto el
+  // dato en vivo (blue de DolarAPI + el override manual vigente desde el
+  // Web App) termina de llegar -- si esos pedidos fallan (ej. sin conexión),
+  // la página se queda mostrando este dato horneado, así que nunca se ve
+  // en blanco.
+  let currentData = {"usd_oficial":{"compra":1500,"venta":1550,"updated_at":"2026-09-29T15:00:00.000Z"},"usd_blue":{"compra":1510,"venta":1590,"updated_at":"2026-09-29T17:57:00.000Z"},"eur_oficial":{"compra":1680,"venta":1940,"updated_at":"2026-09-29T17:45:02.714Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-29T17:45:02.714Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1510,"venta":1590}},"eur_oficial":null},"last_sync":"2026-09-29T18:13:40.721Z"};
+  render(currentData);
 
   async function fetchJSON(url) {
     const res = await fetch(url, { cache: "no-store" });
@@ -411,11 +414,10 @@
       fetchJSON(APPS_SCRIPT_URL),
     ]);
 
-    // Si las dos llamadas en vivo fallan (ej. sin conexión), no nos quedamos
-    // con la pantalla de "Actualizando…" para siempre: mostramos el dato
-    // horneado como respaldo, aunque pueda estar unos minutos viejo.
+    // Si las dos llamadas en vivo fallan (ej. sin conexión), no tocamos lo
+    // que ya está en pantalla (el dato horneado, pintado arriba apenas
+    // cargó la página).
     if (blue.status === "rejected" && state.status === "rejected") {
-      render(currentData);
       return;
     }
 
@@ -453,7 +455,7 @@
   }
 
   refreshLive();
-  // 3) Si alguien deja la pestaña abierta, la refrescamos sola cada minuto.
+  // Si alguien deja la pestaña abierta, la refrescamos sola cada minuto.
   setInterval(refreshLive, 60000);
 </script>
 </body>
