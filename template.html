@@ -251,7 +251,7 @@
      cuando lo tengas -- el tamaño/forma ya está pensado para no romper
      el resto del diseño. -->
 <div class="ad-slot ad-top" id="adTop">
-  <span class="ad-label">Promociona tu negocio</span>
+  <span class="ad-label">Espacio publicitario</span>
 </div>
 
 <div class="wrap">
@@ -267,7 +267,7 @@
 
 <!-- ESPACIO PUBLICITARIO (abajo). Mismo criterio que el de arriba. -->
 <div class="ad-slot ad-bottom" id="adBottom">
-  <span class="ad-label">Promociona tu negocio</span>
+  <span class="ad-label">Espacio publicitario</span>
 </div>
 
 </div><!-- /.page-pad -->
@@ -361,8 +361,8 @@
     if (activeBlue && activeEur) {
       const shareText =
         `Cotización de hoy 💱\n` +
-        `Dólar blue: $${fmt.format(activeBlue.venta)}\n` +
-        `Euro: $${fmt.format(activeEur.venta)}\n\n` +
+        `Dólar blue: compra $${fmt.format(activeBlue.compra)} / venta $${fmt.format(activeBlue.venta)}\n` +
+        `Euro: compra $${fmt.format(activeEur.compra)} / venta $${fmt.format(activeEur.venta)}\n\n` +
         `Mirala actualizada acá: ${PAGE_URL}`;
       document.getElementById("shareLink").href =
         "https://wa.me/?text=" + encodeURIComponent(shareText);
