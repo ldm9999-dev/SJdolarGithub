@@ -151,20 +151,6 @@
     overflow: hidden;
   }
 
-  .card-badge { position: absolute; top: 16px; right: 16px; }
-
-  .badge {
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 100px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .badge.auto { background: transparent; color: var(--ink-soft); border: 1px solid var(--card-line); }
-  .badge.manual { background: var(--accent); color: #0b0d0a; }
-
   .card-title {
     display: flex;
     flex-direction: row;
@@ -326,12 +312,8 @@
   function cardHTML(cfg) {
     const active = cfg.active;
     if (!active) return "";
-    const badge = cfg.isManual
-      ? `<span class="badge manual" title="${(cfg.note || "Actualizado manualmente").replace(/"/g, "&quot;")}">manual</span>`
-      : `<span class="badge auto">auto</span>`;
     return `
       <div class="card" style="--accent:${cfg.color}">
-        <div class="card-badge">${badge}</div>
         <div class="card-title">
           <span class="flag">${cfg.flag}</span>
           <h2>${cfg.label}</h2>
