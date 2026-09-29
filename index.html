@@ -151,20 +151,6 @@
     overflow: hidden;
   }
 
-  .card-badge { position: absolute; top: 16px; right: 16px; }
-
-  .badge {
-    font-size: 10px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 100px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .badge.auto { background: transparent; color: var(--ink-soft); border: 1px solid var(--card-line); }
-  .badge.manual { background: var(--accent); color: #0b0d0a; }
-
   .card-title {
     display: flex;
     flex-direction: row;
@@ -326,12 +312,8 @@
   function cardHTML(cfg) {
     const active = cfg.active;
     if (!active) return "";
-    const badge = cfg.isManual
-      ? `<span class="badge manual" title="${(cfg.note || "Actualizado manualmente").replace(/"/g, "&quot;")}">manual</span>`
-      : `<span class="badge auto">auto</span>`;
     return `
       <div class="card" style="--accent:${cfg.color}">
-        <div class="card-badge">${badge}</div>
         <div class="card-title">
           <span class="flag">${cfg.flag}</span>
           <h2>${cfg.label}</h2>
@@ -397,7 +379,7 @@
   // Web App) termina de llegar -- si esos pedidos fallan (ej. sin conexión),
   // la página se queda mostrando este dato horneado, así que nunca se ve
   // en blanco.
-  let currentData = {"usd_oficial":{"compra":1500,"venta":1550,"updated_at":"2026-09-29T15:00:00.000Z"},"usd_blue":{"compra":1510,"venta":1590,"updated_at":"2026-09-29T17:57:00.000Z"},"eur_oficial":{"compra":1680,"venta":1940,"updated_at":"2026-09-29T17:45:02.714Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-29T17:45:02.714Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1510,"venta":1590}},"eur_oficial":null},"last_sync":"2026-09-29T18:48:38.214Z"};
+  let currentData = {"usd_oficial":{"compra":1500,"venta":1550,"updated_at":"2026-09-29T15:00:00.000Z"},"usd_blue":{"compra":1510,"venta":1590,"updated_at":"2026-09-29T17:57:00.000Z"},"eur_oficial":{"compra":1710,"venta":1910,"updated_at":"2026-09-29T17:45:02.714Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1500,"venta":1590,"updated_at":"2026-09-29T17:45:02.714Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1510,"venta":1590}},"eur_oficial":null},"last_sync":"2026-09-29T18:53:38.462Z"};
   render(currentData);
 
   async function fetchJSON(url) {
@@ -436,14 +418,16 @@
       next.manual = state.value.manual;
     }
 
-    // El euro está atado al dólar: compra = dólar compra +12%, venta =
-    // dólar venta +22%, sobre el dólar VIGENTE (manual si hay, si no el
-    // automático), redondeado al múltiplo de 10 más cercano.
+    // El euro está atado siempre a la COMPRA del dólar (el valor más bajo
+    // entre compra y venta) -- nunca a la venta -- sobre el dólar VIGENTE
+    // (manual si hay, si no el automático): compra euro = dólar compra ×
+    // 1,14, venta euro = dólar compra × 1,27, redondeado al múltiplo de 10
+    // más cercano.
     const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
     if (activeDollar) {
       next.eur_oficial = {
-        compra: roundNearest10(activeDollar.compra * 1.12),
-        venta: roundNearest10(activeDollar.venta * 1.22),
+        compra: roundNearest10(activeDollar.compra * 1.14),
+        venta: roundNearest10(activeDollar.compra * 1.27),
         updated_at: activeDollar.updated_at,
       };
     }
