@@ -315,6 +315,13 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyi2aKtpl3bVKSS2eQVynH8SPjNbCkGxFBtRzhLzUyDfCz7MPeMwm_hJ_wwcXfZ-UM/exec";
   const PAGE_URL = "https://sanjuandolar.com";
 
+  // Margen fijo para el dólar blue AUTOMÁTICO (el que viene de DolarAPI):
+  // se toma el punto medio entre compra y venta de la API y se arma
+  // compra = medio - 40, venta = medio + 40. Es exactamente la misma regla
+  // que aplica Code.gs (MARGIN_BLUE_AUTO) -- tienen que coincidir siempre,
+  // si no la página muestra un valor distinto al que hornea Apps Script.
+  const MARGIN_BLUE_AUTO = 40;
+
   // Compra y venta se muestran como números enteros, sin decimales ni coma.
   const fmt = new Intl.NumberFormat("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
@@ -442,12 +449,15 @@
 
     const next = Object.assign({}, currentData);
     if (blue.status === "fulfilled") {
-      // Redondeado acá mismo (al múltiplo de 10 más cercano) para que el
-      // cálculo del euro de abajo use el mismo valor de dólar que se termina
-      // mostrando en pantalla.
+      // ANTES acá se usaban la compra y venta de DolarAPI tal cual, y eso
+      // pisaba (cada 60 s, en el navegador) el valor correcto que hornea
+      // Apps Script con el margen de $40 -- por eso la página quedaba
+      // desfasada. Ahora se aplica la misma regla: punto medio de la API,
+      // compra = medio - 40, venta = medio + 40, redondeado a múltiplo de 10.
+      const mid = (blue.value.compra + blue.value.venta) / 2;
       next.usd_blue = {
-        compra: roundNearest10(blue.value.compra),
-        venta: roundNearest10(blue.value.venta),
+        compra: roundNearest10(mid - MARGIN_BLUE_AUTO),
+        venta: roundNearest10(mid + MARGIN_BLUE_AUTO),
         updated_at: blue.value.fechaActualizacion,
       };
     }
