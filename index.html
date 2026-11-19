@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Cotización del dólar blue y el euro en San Juan, actualizada al instante.">
+<meta name="description" content="Cotización del dólar blue y el euro en San Juan, actualizada en vivo cada 5 minutos.">
 <meta name="theme-color" content="#0b0d0a">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://sanjuandolar.com/">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Dólar San Juan">
 <meta property="og:title" content="Dólar San Juan | Cotización blue y euro en vivo">
-<meta property="og:description" content="Cotización del dólar blue y el euro en San Juan, actualizada al instante.">
+<meta property="og:description" content="Cotización del dólar blue y el euro en San Juan, actualizada en vivo cada 5 minutos.">
 <meta property="og:url" content="https://sanjuandolar.com/">
 <meta property="og:image" content="https://sanjuandolar.com/fondo-dolares.jpg">
 <meta property="og:locale" content="es_AR">
@@ -22,7 +22,7 @@
 <!-- Twitter/X: misma vista previa, otro formato de etiquetas. -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Dólar San Juan | Cotización blue y euro en vivo">
-<meta name="twitter:description" content="Cotización del dólar blue y el euro en San Juan, actualizada al instante.">
+<meta name="twitter:description" content="Cotización del dólar blue y el euro en San Juan, actualizada en vivo cada 5 minutos.">
 <meta name="twitter:image" content="https://sanjuandolar.com/fondo-dolares.jpg">
 
 <!-- Datos estructurados: le dicen a Google qué es este sitio (nombre y URL).
@@ -330,7 +330,7 @@
   // si es 5 o más redondea para arriba (ej. 1494 -> 1490, 1495 -> 1500,
   // 1669 -> 1670). Se aplica a todo lo que se muestra: dólar y euro.
   function roundNearest10(value) {
-    return Math.round(value);
+    return Math.round(value / 10) * 10;
   }
   const dtf = new Intl.DateTimeFormat("es-AR", {
     timeZone: "America/Argentina/Buenos_Aires",
@@ -423,7 +423,7 @@
   // Web App) termina de llegar -- si esos pedidos fallan (ej. sin conexión),
   // la página se queda mostrando este dato horneado, así que nunca se ve
   // en blanco.
-  let currentData = {"usd_oficial":null,"usd_blue":{"compra":1550,"venta":1640,"updated_at":"2026-11-19T19:31:34.830Z"},"eur_oficial":{"compra":1767,"venta":1969,"updated_at":"2026-11-19T19:31:34.830Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1550,"venta":1640,"updated_at":"2026-11-19T19:31:34.830Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1580,"venta":1680}},"eur_oficial":null},"last_sync":"2026-11-19T19:31:34.830Z"};
+  let currentData = {"usd_oficial":null,"usd_blue":{"compra":1540,"venta":1630,"updated_at":"2026-11-19T19:40:27.811Z"},"eur_oficial":{"compra":1756,"venta":1956,"updated_at":"2026-11-19T19:40:27.811Z"},"manual":{"usd_oficial":null,"usd_blue":{"compra":1540,"venta":1630,"updated_at":"2026-11-19T19:40:27.811Z","note":"Actualizado manualmente vía Telegram","auto_baseline":{"compra":1580,"venta":1680}},"eur_oficial":null},"last_sync":"2026-11-19T19:40:27.811Z"};
   render(currentData);
 
   async function fetchJSON(url) {
@@ -432,7 +432,7 @@
     return res.json();
   }
 
-  async function refreshLive() {
+ async function refreshLive() {
     // MODO MANUAL: ya NO se consulta DolarAPI. Sólo se lee el valor que se
     // fijó por Telegram (Apps Script). El euro sale de la COMPRA del dólar:
     // compra × 1,14 y compra × 1,27.
@@ -453,6 +453,44 @@
       venta: Math.round(blue.compra * 1.27),
       updated_at: blue.updated_at,
     };
+    currentData = next;
+    render(currentData);
+  }
+
+    const next = Object.assign({}, currentData);
+    if (blue.status === "fulfilled") {
+      // ANTES acá se usaban la compra y venta de DolarAPI tal cual, y eso
+      // pisaba (cada 60 s, en el navegador) el valor correcto que hornea
+      // Apps Script con el margen de $40 -- por eso la página quedaba
+      // desfasada. Ahora se aplica la misma regla: punto medio de la API,
+      // compra = medio - 40, venta = medio + 40, redondeado a múltiplo de 10.
+      const mid = (blue.value.compra + blue.value.venta) / 2;
+      next.usd_blue = {
+        compra: roundNearest10(mid - MARGIN_BLUE_AUTO),
+        venta: roundNearest10(mid + MARGIN_BLUE_AUTO),
+        updated_at: blue.value.fechaActualizacion,
+      };
+    }
+    if (state.status === "fulfilled" && state.value && state.value.manual) {
+      next.manual = state.value.manual;
+    }
+
+    // El euro está atado siempre a la COMPRA del dólar (el valor más bajo
+    // entre compra y venta) -- nunca a la venta -- sobre el dólar VIGENTE
+    // (manual si hay, si no el automático): compra euro = dólar compra ×
+    // 1,14, venta euro = dólar compra × 1,27, redondeado al múltiplo de 10
+    // más cercano.
+    const activeDollar = (next.manual && next.manual.usd_blue) || next.usd_blue;
+    if (activeDollar) {
+      next.eur_oficial = {
+        compra: roundNearest10(activeDollar.compra * 1.14),
+        venta: roundNearest10(activeDollar.compra * 1.27),
+        updated_at: activeDollar.updated_at,
+      };
+    }
+
+    next.last_sync = new Date().toISOString();
+
     currentData = next;
     render(currentData);
   }
