@@ -432,20 +432,30 @@
     return res.json();
   }
 
-  async function refreshLive() {
-    // Ya no se consulta el endpoint de euro de DolarAPI: el euro se calcula
-    // siempre a partir del dólar (ver más abajo).
-    const [blue, state] = await Promise.allSettled([
-      fetchJSON("https://dolarapi.com/v1/dolares/blue"),
-      fetchJSON(APPS_SCRIPT_URL),
-    ]);
-
-    // Si las dos llamadas en vivo fallan (ej. sin conexión), no tocamos lo
-    // que ya está en pantalla (el dato horneado, pintado arriba apenas
-    // cargó la página).
-    if (blue.status === "rejected" && state.status === "rejected") {
-      return;
+ async function refreshLive() {
+    // MODO MANUAL: ya NO se consulta DolarAPI. Sólo se lee el valor que se
+    // fijó por Telegram (Apps Script). El euro sale de la COMPRA del dólar:
+    // compra × 1,14 y compra × 1,27.
+    let state;
+    try {
+      state = await fetchJSON(APPS_SCRIPT_URL);
+    } catch (e) {
+      return; // sin conexión: queda lo que ya está en pantalla
     }
+    const blue = state && state.manual && state.manual.usd_blue;
+    if (!blue) return;
+
+    const next = Object.assign({}, currentData);
+    next.manual = state.manual;
+    next.usd_blue = { compra: blue.compra, venta: blue.venta, updated_at: blue.updated_at };
+    next.eur_oficial = {
+      compra: Math.round(blue.compra * 1.14),
+      venta: Math.round(blue.compra * 1.27),
+      updated_at: blue.updated_at,
+    };
+    currentData = next;
+    render(currentData);
+  }
 
     const next = Object.assign({}, currentData);
     if (blue.status === "fulfilled") {
