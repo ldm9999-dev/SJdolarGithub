@@ -1,9 +1,9 @@
 {
   "usd_oficial": null,
   "usd_blue": {
-    "compra": 1550,
-    "venta": 1640,
-    "updated_at": "2026-11-19T19:46:24.776Z",
+    "compra": 1560,
+    "venta": 1650,
+    "updated_at": "2026-11-20T17:23:39.345Z",
     "note": "Actualizado manualmente vía Telegram",
     "auto_baseline": {
       "compra": 1580,
